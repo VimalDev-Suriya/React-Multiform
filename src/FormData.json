@@ -36,5 +36,40 @@
         "_uid": "f61233e8-565e-43d0-9c14-7d7f220c6020"
       }
     ]
+  },
+  {
+    "component": "page",
+    "label": "Page 2",
+    "_uid": "3a30803f-135f-442c-ab6e-d44d7d7a5164",
+    "fields": [
+      {
+        "component": "options",
+        "label": "Radio Buttons",
+        "type": "radio",
+        "_uid": "bd90f44a-d479-49ae-ad66-c2c475dca66b",
+        "options": [
+          {
+            "component": "option",
+            "label": "Option 1",
+            "value": "one"
+          },
+          {
+            "component": "option",
+            "label": "Option 2",
+            "value": "two"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "label": "Conditional Field",
+        "type": "text",
+        "_uid": "bd90f44a-d479-49ae-ad66-c2c475daa66b",
+        "conditional": {
+          "value": "two",
+          "field": "3a30803f-135f-442c-ab6e-d44d7d7a5164_bd90f44a-d479-49ae-ad66-c2c475dca66b"
+        }
+      }
+    ]
   }
 ]

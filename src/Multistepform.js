@@ -1,16 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Field from './Field.js';
 
 const Multistepform = ({ formData }) => {
   const [page, setPage] = useState(0);
   const [currentPageData, setCurrentPageData] = useState(formData[page]);
-  const [value, setValues] = useState({});
+  const [values, setValues] = useState({});
+
+  useEffect(() => {
+    let upcomingPageData = formData[page];
+    setCurrentPageData(upcomingPageData);
+    // console.log(upcomingPageData.fields);
+
+    setValues((currentValues) => {
+      const newValues = upcomingPageData.fields.reduce((acc, field) => {
+        if (field.component === 'field_group') {
+          for (let subfields of field.fields) {
+            acc[subfields._uid] = '';
+          }
+        } else {
+          acc[field._uid] = '';
+        }
+        return acc;
+      }, {});
+      // console.log('newValues', newValues,currentValues);
+      return Object.assign({}, newValues, currentValues);
+    });
+  }, [page, formData]);
 
   const onSubmit = (e) => {
     e.preventDefault();
   };
-  const fieldchange = ({ id, value }) => {
-    console.log(id, value);
+
+  // console.log('Values', values,currentPageData);
+  const fieldchange = (id, value) => {
+    setValues((currentValues) => {
+      currentValues[id] = value;
+      return currentValues;
+    });
+    setCurrentPageData((currentPageData) => {
+      return Object.assign({}, currentPageData);
+    });
   };
 
   return (
@@ -18,19 +47,31 @@ const Multistepform = ({ formData }) => {
       <h1>{currentPageData.label}</h1>
       {currentPageData.fields.map((field) => {
         switch (field.component) {
-          case '':
+          case 'field_group':
             return '';
           default:
             return (
               <Field
+                key={field._uid}
                 field={field}
                 fieldchange={fieldchange}
                 type={field.type}
-                value={value[field._uid]}
+                val={values[field._uid]}
               />
             );
         }
       })}
+      {page > 0 && (
+        <button onClick={() => setPage((prevPage) => prevPage - 1)}>
+          Prev
+        </button>
+      )}
+      &nbsp;
+      {page < formData.length - 1 && (
+        <button onClick={() => setPage((prevPage) => prevPage + 1)}>
+          Next
+        </button>
+      )}
     </form>
   );
 };
